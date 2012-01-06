@@ -1,0 +1,22 @@
+
+Source: capi-telephony-sim
+Section: libs
+Priority: extra
+Maintainer: Kangho Hur <kangho.hur@samsung.com>, ByungWoo Lee <bw1212.lee@samsung.com>
+Build-Depends: debhelper (>= 5), dlog-dev, libslp-tapi-dev, libglib2.0-dev, libvconf-dev, capi-base-common-dev
+
+Package: capi-telephony-sim
+Architecture: any
+Depends: ${shilbs:Depends}, ${misc:Depends}
+Description: A Telephony SIM library in Tizen Natvie API
+
+Package: capi-telephony-sim-dev
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, capi-telephony-sim (= ${Source-Version}), dlog-dev, libslp-tapi-dev, libglib2.0-dev, libvconf-dev, capi-base-common-dev
+Description: A Telephony SIM library in Tizen Natvie API (DEV)
+
+Package: capi-telephony-sim-dbg
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, capi-telephony-sim (= ${Source-Version})
+Description: A Telephony SIM library in Tizen Natvie API (DBG)
+

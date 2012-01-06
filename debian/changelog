@@ -1,0 +1,15 @@
+capi-telephony-sim (0.1.0-8) unstable; urgency=low
+
+  * Update version
+  * Git: api/sim
+  * Tag: capi-telephony-sim_0.1.0-8
+
+ -- ByungWoo Lee <bw1212.lee@samsung.com>  Thu, 15 Dec 2011 13:17:30 +0900
+
+capi-telephony-sim (0.0.1-1) unstable; urgency=low
+
+  * Initial release. 
+  * Git: api/sim
+  * Tag: capi-telephony-sim_0.0.1-1
+
+ -- ByungWoo Lee <bw1212.lee@samsung.com>  Wed, 07 Dec 2011 12:47:03 +0900
