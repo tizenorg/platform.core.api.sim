@@ -47,7 +47,7 @@ static bool slot_is_registered = false;
 static sim_cb_data sim_state_cb = {SIM_STATE_UNKNOWN, NULL, NULL};
 
 // Callback function adapter
-void _sim_state_changed_cb_adapter(keynode_t *node, void* user_data);
+static void __sim_state_changed_cb_adapter(keynode_t *node, void* user_data);
 
 // Internal Macros
 #define SIM_CHECK_INPUT_PARAMETER(arg) \
@@ -354,7 +354,7 @@ int sim_set_state_changed_cb(sim_state_changed_cb sim_cb, void* user_data)
 
 	if( init_is_registered == false) 
 	{		
-		if( vconf_notify_key_changed(VCONFKEY_TELEPHONY_SIM_INIT, (vconf_callback_fn)_sim_state_changed_cb_adapter, NULL) != 0 )
+		if( vconf_notify_key_changed(VCONFKEY_TELEPHONY_SIM_INIT, (vconf_callback_fn)__sim_state_changed_cb_adapter, NULL) != 0 )
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to register callback of sim initialization", 
 					__FUNCTION__, SIM_ERROR_OPERATION_FAILED);
@@ -365,7 +365,7 @@ int sim_set_state_changed_cb(sim_state_changed_cb sim_cb, void* user_data)
 
 	if( chv_is_registered == false )
 	{
-		if( vconf_notify_key_changed(VCONFKEY_TELEPHONY_SIM_CHV, (vconf_callback_fn)_sim_state_changed_cb_adapter, NULL) != 0)
+		if( vconf_notify_key_changed(VCONFKEY_TELEPHONY_SIM_CHV, (vconf_callback_fn)__sim_state_changed_cb_adapter, NULL) != 0)
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to register callback of several lock verification", 
 					__FUNCTION__, SIM_ERROR_OPERATION_FAILED);
@@ -376,7 +376,7 @@ int sim_set_state_changed_cb(sim_state_changed_cb sim_cb, void* user_data)
 
 	if( slot_is_registered == false )
 	{
-		if(vconf_notify_key_changed(VCONFKEY_TELEPHONY_SIM_SLOT, (vconf_callback_fn)_sim_state_changed_cb_adapter, NULL) != 0)
+		if(vconf_notify_key_changed(VCONFKEY_TELEPHONY_SIM_SLOT, (vconf_callback_fn)__sim_state_changed_cb_adapter, NULL) != 0)
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to register callback of sim slot", 
 					__FUNCTION__, SIM_ERROR_OPERATION_FAILED);
@@ -396,7 +396,7 @@ int sim_unset_state_changed_cb()
 {
 	if( init_is_registered == true) 
 	{		
-		if( vconf_ignore_key_changed(VCONFKEY_TELEPHONY_SIM_INIT, (vconf_callback_fn)_sim_state_changed_cb_adapter) != 0 )
+		if( vconf_ignore_key_changed(VCONFKEY_TELEPHONY_SIM_INIT, (vconf_callback_fn)__sim_state_changed_cb_adapter) != 0 )
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to unregister callback of sim initialization", 
 					__FUNCTION__, SIM_ERROR_OPERATION_FAILED);
@@ -407,7 +407,7 @@ int sim_unset_state_changed_cb()
 
 	if( chv_is_registered == true )
 	{
-		if( vconf_ignore_key_changed(VCONFKEY_TELEPHONY_SIM_CHV, (vconf_callback_fn)_sim_state_changed_cb_adapter) != 0)
+		if( vconf_ignore_key_changed(VCONFKEY_TELEPHONY_SIM_CHV, (vconf_callback_fn)__sim_state_changed_cb_adapter) != 0)
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to unregister callback of several lock verification", 
 					__FUNCTION__, SIM_ERROR_OPERATION_FAILED);
@@ -418,7 +418,7 @@ int sim_unset_state_changed_cb()
 
 	if( slot_is_registered == true )
 	{
-		if( vconf_ignore_key_changed(VCONFKEY_TELEPHONY_SIM_SLOT, (vconf_callback_fn)_sim_state_changed_cb_adapter) != 0)
+		if( vconf_ignore_key_changed(VCONFKEY_TELEPHONY_SIM_SLOT, (vconf_callback_fn)__sim_state_changed_cb_adapter) != 0)
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to unregister callback of sim slot", 
 					__FUNCTION__, SIM_ERROR_OPERATION_FAILED);
@@ -434,7 +434,7 @@ int sim_unset_state_changed_cb()
 	return SIM_ERROR_NONE;
 }
 
-void _sim_state_changed_cb_adapter(keynode_t *node, void* user_data) 
+static void __sim_state_changed_cb_adapter(keynode_t *node, void* user_data) 
 {
 	sim_state_e sim_state = SIM_STATE_UNKNOWN;
 

@@ -1,3 +1,11 @@
+capi-telephony-sim (0.1.0-10) unstable; urgency=low
+
+  * Convert internal symbol to static
+  * Git: slp/api/sim
+  * Tag: capi-telephony-sim_0.1.0-10 
+
+ -- ByungWoo Lee <bw1212.lee@samsung.com>  Mon, 20 Feb 2012 15:54:30 +0900
+
 capi-telephony-sim (0.1.0-9) unstable; urgency=low
 
   * Add versioning of library
