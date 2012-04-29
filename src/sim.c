@@ -191,6 +191,49 @@ int sim_get_mnc(char** mnc)
 }
 
 
+int sim_get_msin(char** msin)
+{
+	TelSimImsiInfo_t sim_imsi_info;
+	int error_code = SIM_ERROR_NONE;
+	int card_changed = 0;
+	TelSimCardStatus_t sim_card_state = 0x00;
+
+	SIM_CHECK_INPUT_PARAMETER(msin);
+	SIM_INIT();
+
+	if( tel_get_sim_init_info(&sim_card_state, &card_changed) != 0
+		|| sim_card_state != TAPI_SIM_STATUS_SIM_INIT_COMPLETED )
+	{
+		LOGE("[%s] NOT_AVAILABLE(0x%08x)", __FUNCTION__, SIM_ERROR_NOT_AVAILABLE);
+		error_code = SIM_ERROR_NOT_AVAILABLE;
+	}
+	else
+	{
+		if( tel_get_sim_imsi(&sim_imsi_info) != 0 )
+		{
+			LOGE("[%s] OPERATION_FAILED(0x%08x)", __FUNCTION__, SIM_ERROR_OPERATION_FAILED);
+			error_code = SIM_ERROR_OPERATION_FAILED;
+		}
+		else
+		{
+			*msin = (char*)malloc(sizeof(char) * (TAPI_SIM_MSIN_CODE_LEN+1));
+			if( *msin == NULL )
+			{
+				LOGE("[%s] OUT_OF_MEMORY(0x%08x)", __FUNCTION__, SIM_ERROR_OUT_OF_MEMORY);
+				error_code = SIM_ERROR_OUT_OF_MEMORY;
+			}
+			else
+			{
+				strncpy(*msin, sim_imsi_info.szMsin, TAPI_SIM_MSIN_CODE_LEN+1);
+			}
+		}
+	}
+
+	tel_deinit();
+	return error_code;
+}
+
+
 int sim_get_spn(char** spn)
 {
 	int error_code = SIM_ERROR_NONE;
@@ -231,6 +274,66 @@ int sim_get_spn(char** spn)
 	return error_code;
 }
 
+
+int sim_get_cphs_operator_name(char** full_name, char** short_name)
+{
+	TelSimCphsLocalInfo_t cphs_info;
+	int error_code = SIM_ERROR_NONE;
+	int card_changed = 0;
+	TelSimCardStatus_t sim_card_state = 0x00;
+
+	SIM_CHECK_INPUT_PARAMETER(full_name);
+	SIM_CHECK_INPUT_PARAMETER(short_name);
+	SIM_INIT();
+
+	if( tel_get_sim_init_info(&sim_card_state, &card_changed) != 0
+		|| sim_card_state != TAPI_SIM_STATUS_SIM_INIT_COMPLETED )
+	{
+		LOGE("[%s] NOT_AVAILABLE(0x%08x)", __FUNCTION__, SIM_ERROR_NOT_AVAILABLE);
+		error_code = SIM_ERROR_NOT_AVAILABLE;
+	}
+	else
+	{
+		if( tel_get_sim_cphs_info(&cphs_info) != 0 )
+		{
+			LOGE("[%s] OPERATION_FAILED(0x%08x)", __FUNCTION__, SIM_ERROR_OPERATION_FAILED);
+			error_code = SIM_ERROR_OPERATION_FAILED;
+		}
+		else
+		{
+			if(cphs_info.opname.NameLength)
+			{
+				*full_name = strndup((const char*)cphs_info.opname.OperatorName, cphs_info.opname.NameLength);
+				if(*full_name == NULL)
+				{
+					LOGE("[%s] OUT_OF_MEMORY(0x%08x)", __FUNCTION__, SIM_ERROR_OUT_OF_MEMORY);
+					error_code = SIM_ERROR_OUT_OF_MEMORY;
+				}
+			}
+			else
+			{
+				*full_name = NULL;
+			}
+
+			if(cphs_info.opshortform.ShortNameLength)
+			{
+				*short_name = strndup((const char*)cphs_info.opshortform.OperatorShortName, cphs_info.opshortform.ShortNameLength);
+				if(*short_name == NULL)
+				{
+					LOGE("[%s] OUT_OF_MEMORY(0x%08x)", __FUNCTION__, SIM_ERROR_OUT_OF_MEMORY);
+					error_code = SIM_ERROR_OUT_OF_MEMORY;
+				}
+			}
+			else
+			{
+				*short_name = NULL;
+			}
+		}
+	}
+
+	tel_deinit();
+	return error_code;
+}
 
 int sim_get_state(sim_state_e* sim_state)
 {

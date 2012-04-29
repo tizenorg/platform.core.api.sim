@@ -1,7 +1,23 @@
+capi-telephony-sim (0.1.0-12) unstable; urgency=low
+
+  * Correct dependent packages
+  * Git: api/sim
+  * Tag: capi-telephony-sim_0.1.0-12
+
+ -- ByungWoo Lee <bw1212.lee@samsung.com>  Thu, 15 Mar 2012 13:32:00 +0900
+  
+capi-telephony-sim (0.1.0-11) unstable; urgency=low
+
+  * Add new APIs(sim_get_msin, sim_get_cphs_operator_name),related TCs and test code
+  * Git: api/sim
+  * Tag: capi-telephony-sim_0.1.0-11
+
+ -- Kyeongchul Kim <kyeongchul.kim@samsung.com>  Wed, 07 Mar 2012 13:54:07 +0900
+
 capi-telephony-sim (0.1.0-10) unstable; urgency=low
 
   * Convert internal symbol to static
-  * Git: slp/api/sim
+  * Git: api/sim
   * Tag: capi-telephony-sim_0.1.0-10 
 
  -- ByungWoo Lee <bw1212.lee@samsung.com>  Mon, 20 Feb 2012 15:54:30 +0900

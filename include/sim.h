@@ -119,6 +119,24 @@ int sim_get_mcc(char **mcc);
 int sim_get_mnc(char **mnc);
 
 /**
+ * @brief Gets the Mobile Subscription Identification Number (MSIN) of SIM provider.
+ * @details This function gets Mobile Subscription Identification Number embedded in SIM card.
+ *
+ * @remarks @c msin must be released with free() by you.
+ * @param[out] msin The  Mobile Subscription Identification Number
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #SIM_ERROR_NONE Successful
+ * @retval #SIM_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #SIM_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #SIM_ERROR_OPERATION_FAILED Operation failed
+ * @retval #SIM_ERROR_NOT_AVAILABLE SIM is not available
+ * @pre The SIM state must be #SIM_STATE_AVAILABLE.
+ * @see	sim_get_state()
+ *
+ */
+int sim_get_msin(char **msin);
+
+/**
  * @brief Gets the Service Provider Name (SPN) of SIM card.
  * @details This function gets Service Provider Name embedded in SIM card.
  * If this value is not stored in SIM card, NULL will be returned.
@@ -134,6 +152,24 @@ int sim_get_mnc(char **mnc);
  *
  */
 int sim_get_spn(char **spn);
+
+/**
+ * @brief Gets the Operator Name String (ONS) of Common PCN Handset Specification (CPHS) in SIM card.
+ * @details This function gets the full name and the short name of CPHS operator embedded in SIM card.
+ * If this value is not stored in SIM card, NULL will be returned.
+ * @remarks @c full_name and @c short_name must be released with free() by you.
+ * @param[out] full_name The full name of CPHS operator
+ * @param[out] short_name The short name of CPHS operator
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #SIM_ERROR_NONE Successful
+ * @retval #SIM_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #SIM_ERROR_OPERATION_FAILED Operation failed
+ * @retval #SIM_ERROR_NOT_AVAILABLE SIM is not available
+ * @pre The SIM state must be #SIM_STATE_AVAILABLE.
+ * @see	sim_get_state()
+ *
+ */
+int sim_get_cphs_operator_name(char** full_name, char** short_name);
 
 /**
  * @brief Gets the state of SIM.
