@@ -3,7 +3,7 @@ Source: capi-telephony-sim
 Section: libs
 Priority: extra
 Maintainer: Kangho Hur <kangho.hur@samsung.com>, ByungWoo Lee <bw1212.lee@samsung.com>, kyeongchul.kim <kyeongchul.kim@samsung.com>, JaYoung Gu <jygu@samsung.com>
-Build-Depends: debhelper (>= 5), dlog-dev, libslp-tapi-dev, libglib2.0-dev, libvconf-dev, capi-base-common-dev
+Build-Depends: debhelper (>= 5), dlog-dev, libslp-tapi-dev, libglib2.0-dev, capi-base-common-dev
 
 Package: capi-telephony-sim
 Architecture: any

@@ -7,9 +7,9 @@ SET(maintainer "ByungWoo Lee <bw1212.lee@samsung.com>")
 SET(description "Telephony SIM Framework")
 SET(service "telephony")
 SET(submodule "sim")
-SET(dependents "dlog tapi glib-2.0 vconf capi-base-common")
+SET(dependents "dlog tapi glib-2.0 capi-base-common")
 SET(pc_dependents "capi-base-common")
-SET(deb_dependents "dlog-dev libslp-tapi-dev libglib2.0-dev libvconf-dev capi-base-common-dev")
+SET(deb_dependents "dlog-dev libslp-tapi-dev libglib2.0-dev capi-base-common-dev")
 
 SET(Services 
         "application"
