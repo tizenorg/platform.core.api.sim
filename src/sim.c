@@ -464,9 +464,17 @@ int sim_get_subscriber_number(char** subscriber_number)
 						}
 					}
 					i++;
-					g_variant_iter_free(iter_row);
+
+					if ( iter_row )
+						g_variant_iter_free(iter_row);
+					else
+						LOGE("iter : 0");
 				}
-				g_variant_iter_free(iter);
+
+				if ( iter )
+					g_variant_iter_free(iter);
+				else
+					LOGE("iter : 0");
 
 				if (list.list[0].num != NULL && strlen(list.list[0].num) != 0) {
 					*subscriber_number = (char*) malloc(strlen(list.list[0].num) + 1);
