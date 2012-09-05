@@ -76,13 +76,13 @@ static sim_error_e _convert_access_rt_to_sim_error(TelSimAccessResult_t access_r
 	sim_error_e error = SIM_ERROR_NONE;
 	switch (access_rt) {
 		case TAPI_SIM_ACCESS_SUCCESS:
+		case TAPI_SIM_ACCESS_FILE_NOT_FOUND:
 			error = SIM_ERROR_NONE;
 			break;
-		case TAPI_SIM_ACCESS_FILE_NOT_FOUND:
 		case TAPI_SIM_ACCESS_ACCESS_CONDITION_NOT_SATISFIED:
+		case TAPI_SIM_ACCESS_CARD_ERROR:
 			error = SIM_ERROR_NOT_AVAILABLE;
 			break;
-		case TAPI_SIM_ACCESS_CARD_ERROR:
 		case TAPI_SIM_ACCESS_FAILED:
 		default:
 			error = SIM_ERROR_OPERATION_FAILED;
@@ -108,6 +108,7 @@ int sim_get_icc_id(char** icc_id)
 	if (tel_get_sim_init_info(th, &sim_card_state, &card_changed) != 0 || sim_card_state != TAPI_SIM_STATUS_SIM_INIT_COMPLETED) {
 		LOGE("[%s] NOT_AVAILABLE(0x%08x)", __FUNCTION__, SIM_ERROR_NOT_AVAILABLE);
 		error_code = SIM_ERROR_NOT_AVAILABLE;
+		*icc_id = NULL;
 	} else {
 		sync_gv = g_dbus_connection_call_sync(th->dbus_connection, DBUS_TELEPHONY_SERVICE, th->path,
 				DBUS_TELEPHONY_SIM_INTERFACE, "GetICCID", NULL, NULL, G_DBUS_CALL_FLAGS_NONE, -1,
@@ -129,11 +130,13 @@ int sim_get_icc_id(char** icc_id)
 				}
 			} else {
 				error_code = _convert_access_rt_to_sim_error(result);
+				*icc_id = NULL;
 			}
 		} else {
 			LOGE("g_dbus_conn failed. error (%s)", gerr->message);
 			g_error_free(gerr);
 			error_code = SIM_ERROR_OPERATION_FAILED;
+			*icc_id = NULL;
 		}
 	}
 	tel_deinit(th);
@@ -154,6 +157,7 @@ int sim_get_mcc(char** mcc)
 	if (tel_get_sim_init_info(th, &sim_card_state, &card_changed) != 0 || sim_card_state != TAPI_SIM_STATUS_SIM_INIT_COMPLETED) {
 		LOGE("[%s] NOT_AVAILABLE(0x%08x)", __FUNCTION__, SIM_ERROR_NOT_AVAILABLE);
 		error_code = SIM_ERROR_NOT_AVAILABLE;
+		*mcc = NULL;
 	} else {
 		if (tel_get_sim_imsi(th, &sim_imsi_info) != 0) {
 			LOGE("[%s] OPERATION_FAILED(0x%08x)", __FUNCTION__, SIM_ERROR_OPERATION_FAILED);
@@ -183,10 +187,10 @@ int sim_get_mnc(char** mnc)
 	SIM_CHECK_INPUT_PARAMETER(mnc);
 	SIM_INIT(th);
 
-	if (tel_get_sim_init_info(th, &sim_card_state, &card_changed) != 0
-			|| sim_card_state != TAPI_SIM_STATUS_SIM_INIT_COMPLETED) {
+	if (tel_get_sim_init_info(th, &sim_card_state, &card_changed) != 0 || sim_card_state != TAPI_SIM_STATUS_SIM_INIT_COMPLETED) {
 		LOGE("[%s] NOT_AVAILABLE(0x%08x)", __FUNCTION__, SIM_ERROR_NOT_AVAILABLE);
 		error_code = SIM_ERROR_NOT_AVAILABLE;
+		*mnc = NULL;
 	} else {
 		if (tel_get_sim_imsi(th, &sim_imsi_info) != 0) {
 			LOGE("[%s] OPERATION_FAILED(0x%08x)", __FUNCTION__, SIM_ERROR_OPERATION_FAILED);
@@ -220,6 +224,7 @@ int sim_get_msin(char** msin)
 	if (tel_get_sim_init_info(th, &sim_card_state, &card_changed) != 0 || sim_card_state != TAPI_SIM_STATUS_SIM_INIT_COMPLETED) {
 		LOGE("[%s] NOT_AVAILABLE(0x%08x)", __FUNCTION__, SIM_ERROR_NOT_AVAILABLE);
 		error_code = SIM_ERROR_NOT_AVAILABLE;
+		*msin = NULL;
 	} else {
 		if (tel_get_sim_imsi(th, &sim_imsi_info) != 0) {
 			LOGE("[%s] OPERATION_FAILED(0x%08x)", __FUNCTION__, SIM_ERROR_OPERATION_FAILED);
@@ -253,10 +258,10 @@ int sim_get_spn(char** spn)
 	SIM_CHECK_INPUT_PARAMETER(spn);
 	SIM_INIT(th);
 
-	if (tel_get_sim_init_info(th, &sim_card_state, &card_changed) != 0
-			|| sim_card_state != TAPI_SIM_STATUS_SIM_INIT_COMPLETED) {
+	if (tel_get_sim_init_info(th, &sim_card_state, &card_changed) != 0 || sim_card_state != TAPI_SIM_STATUS_SIM_INIT_COMPLETED) {
 		LOGE("[%s] NOT_AVAILABLE(0x%08x)", __FUNCTION__, SIM_ERROR_NOT_AVAILABLE);
 		error_code = SIM_ERROR_NOT_AVAILABLE;
+		*spn = NULL;
 	} else {
 		sync_gv = g_dbus_connection_call_sync(th->dbus_connection, DBUS_TELEPHONY_SERVICE, th->path,
 				DBUS_TELEPHONY_SIM_INTERFACE, "GetSpn", NULL, NULL, G_DBUS_CALL_FLAGS_NONE, -1,
@@ -278,11 +283,13 @@ int sim_get_spn(char** spn)
 				}
 			} else {
 				error_code = _convert_access_rt_to_sim_error(result);
+				*spn = NULL;
 			}
 		} else {
 			LOGE("g_dbus_conn failed. error (%s)", gerr->message);
 			g_error_free(gerr);
 			error_code = SIM_ERROR_OPERATION_FAILED;
+			*spn = NULL;
 		}
 	}
 	tel_deinit(th);
@@ -305,10 +312,11 @@ int sim_get_cphs_operator_name(char** full_name, char** short_name)
 	SIM_CHECK_INPUT_PARAMETER(short_name);
 	SIM_INIT(th);
 
-	if (tel_get_sim_init_info(th, &sim_card_state, &card_changed) != 0
-			|| sim_card_state != TAPI_SIM_STATUS_SIM_INIT_COMPLETED) {
+	if (tel_get_sim_init_info(th, &sim_card_state, &card_changed) != 0 || sim_card_state != TAPI_SIM_STATUS_SIM_INIT_COMPLETED) {
 		LOGE("[%s] NOT_AVAILABLE(0x%08x)", __FUNCTION__, SIM_ERROR_NOT_AVAILABLE);
 		error_code = SIM_ERROR_NOT_AVAILABLE;
+		*full_name = NULL;
+		*short_name = NULL;
 	} else {
 		sync_gv = g_dbus_connection_call_sync(th->dbus_connection, DBUS_TELEPHONY_SERVICE, th->path,
 				DBUS_TELEPHONY_SIM_INTERFACE, "GetCphsNetName", NULL, NULL, G_DBUS_CALL_FLAGS_NONE,
@@ -342,11 +350,15 @@ int sim_get_cphs_operator_name(char** full_name, char** short_name)
 				}
 			} else {
 				error_code = _convert_access_rt_to_sim_error(result);
+				*full_name = NULL;
+				*short_name = NULL;
 			}
 		} else {
 			LOGE("g_dbus_conn failed. error (%s)", gerr->message);
 			g_error_free(gerr);
 			error_code = SIM_ERROR_OPERATION_FAILED;
+			*full_name = NULL;
+			*short_name = NULL;
 		}
 	}
 	tel_deinit(th);
@@ -440,6 +452,7 @@ int sim_get_subscriber_number(char** subscriber_number)
 	if (tel_get_sim_init_info(th, &sim_card_state, &card_changed) != 0 || sim_card_state != TAPI_SIM_STATUS_SIM_INIT_COMPLETED) {
 		LOGE("[%s] NOT_AVAILABLE(0x%08x)", __FUNCTION__, SIM_ERROR_NOT_AVAILABLE);
 		error_code = SIM_ERROR_NOT_AVAILABLE;
+		*subscriber_number = NULL;
 	} else {
 		sync_gv = g_dbus_connection_call_sync(th->dbus_connection, DBUS_TELEPHONY_SERVICE, th->path,
 				DBUS_TELEPHONY_SIM_INTERFACE, "GetMSISDN", NULL, NULL, G_DBUS_CALL_FLAGS_NONE, -1,
@@ -464,17 +477,9 @@ int sim_get_subscriber_number(char** subscriber_number)
 						}
 					}
 					i++;
-
-					if ( iter_row )
-						g_variant_iter_free(iter_row);
-					else
-						LOGE("iter : 0");
+					g_variant_iter_free(iter_row);
 				}
-
-				if ( iter )
-					g_variant_iter_free(iter);
-				else
-					LOGE("iter : 0");
+				g_variant_iter_free(iter);
 
 				if (list.list[0].num != NULL && strlen(list.list[0].num) != 0) {
 					*subscriber_number = (char*) malloc(strlen(list.list[0].num) + 1);
@@ -491,11 +496,13 @@ int sim_get_subscriber_number(char** subscriber_number)
 
 			} else {
 				error_code = _convert_access_rt_to_sim_error(result);
+				*subscriber_number = NULL;
 			}
 		} else {
 			LOGE("g_dbus_conn failed. error (%s)", gerr->message);
 			g_error_free(gerr);
 			error_code = SIM_ERROR_OPERATION_FAILED;
+			*subscriber_number = NULL;
 		}
 	}
 	tel_deinit(th);

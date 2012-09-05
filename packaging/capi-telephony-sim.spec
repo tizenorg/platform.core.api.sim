@@ -1,7 +1,7 @@
 #sbs-git:slp/api/sim capi-telephony-sim 0.1.0 338620cf30c11d71e7f17c6cad5968ac57d724d4
 Name:       capi-telephony-sim
 Summary:    Telephony SIM Framework
-Version: 0.1.2
+Version: 0.1.4
 Release:    1
 Group:      TO_BE/FILLED_IN
 License:    TO BE FILLED IN
