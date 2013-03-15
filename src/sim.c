@@ -31,7 +31,7 @@
 #ifdef LOG_TAG
 #undef LOG_TAG
 #endif
-#define LOG_TAG "CAPI_TELEPHONY_SIM"
+#define LOG_TAG "TIZEN_N_SIM"
 
 struct tapi_handle {
 	gpointer dbus_connection;
