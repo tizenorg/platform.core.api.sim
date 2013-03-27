@@ -117,14 +117,8 @@ int sim_get_icc_id(char** icc_id)
 		if (sync_gv) {
 			g_variant_get(sync_gv, "(is)", &result, &iccid);
 			if (result == TAPI_SIM_ACCESS_SUCCESS) {
-				if (iccid != NULL && strlen(iccid) != 0) {
-					*icc_id = (char*) malloc(strlen(iccid) + 1);
-					if (*icc_id == NULL) {
-						LOGE("[%s] OUT_OF_MEMORY(0x%08x)", __FUNCTION__, SIM_ERROR_OUT_OF_MEMORY);
-						error_code = SIM_ERROR_OUT_OF_MEMORY;
-					} else {
-						snprintf(*icc_id, strlen(iccid) + 1, "%s", iccid);
-					}
+				if (iccid != NULL && iccid[0] != '\0') {
+					*icc_id = g_strdup(iccid);
 				} else {
 					*icc_id = NULL;
 				}
@@ -132,12 +126,14 @@ int sim_get_icc_id(char** icc_id)
 				error_code = _convert_access_rt_to_sim_error(result);
 				*icc_id = NULL;
 			}
+			g_free(iccid);
 		} else {
 			LOGE("g_dbus_conn failed. error (%s)", gerr->message);
 			g_error_free(gerr);
 			error_code = SIM_ERROR_OPERATION_FAILED;
 			*icc_id = NULL;
 		}
+		g_variant_unref(sync_gv);
 	}
 	tel_deinit(th);
 	return error_code;
@@ -163,13 +159,7 @@ int sim_get_mcc(char** mcc)
 			LOGE("[%s] OPERATION_FAILED(0x%08x)", __FUNCTION__, SIM_ERROR_OPERATION_FAILED);
 			error_code = SIM_ERROR_OPERATION_FAILED;
 		} else {
-			*mcc = (char*) malloc(sizeof(char) * (3 + 1));
-			if (*mcc == NULL) {
-				LOGE("[%s] OUT_OF_MEMORY(0x%08x)", __FUNCTION__, SIM_ERROR_OUT_OF_MEMORY);
-				error_code = SIM_ERROR_OUT_OF_MEMORY;
-			} else {
-				snprintf(*mcc, strlen(sim_imsi_info.szMcc) + 1, "%s", sim_imsi_info.szMcc);
-			}
+			*mcc = g_strdup(sim_imsi_info.szMcc);
 		}
 	}
 	tel_deinit(th);
@@ -196,16 +186,9 @@ int sim_get_mnc(char** mnc)
 			LOGE("[%s] OPERATION_FAILED(0x%08x)", __FUNCTION__, SIM_ERROR_OPERATION_FAILED);
 			error_code = SIM_ERROR_OPERATION_FAILED;
 		} else {
-			*mnc = (char*) malloc(sizeof(char) * (3 + 1));
-			if (*mnc == NULL) {
-				LOGE("[%s] OUT_OF_MEMORY(0x%08x)", __FUNCTION__, SIM_ERROR_OUT_OF_MEMORY);
-				error_code = SIM_ERROR_OUT_OF_MEMORY;
-			} else {
-				snprintf(*mnc, strlen(sim_imsi_info.szMnc) + 1, "%s", sim_imsi_info.szMnc);
-			}
+			*mnc = g_strdup(sim_imsi_info.szMnc);
 		}
 	}
-
 	tel_deinit(th);
 	return SIM_ERROR_NONE;
 }
@@ -230,13 +213,7 @@ int sim_get_msin(char** msin)
 			LOGE("[%s] OPERATION_FAILED(0x%08x)", __FUNCTION__, SIM_ERROR_OPERATION_FAILED);
 			error_code = SIM_ERROR_OPERATION_FAILED;
 		} else {
-			*msin = (char*) malloc(sizeof(char) * (10 + 1));
-			if (*msin == NULL) {
-				LOGE("[%s] OUT_OF_MEMORY(0x%08x)", __FUNCTION__, SIM_ERROR_OUT_OF_MEMORY);
-				error_code = SIM_ERROR_OUT_OF_MEMORY;
-			} else {
-				snprintf(*msin, strlen(sim_imsi_info.szMsin) + 1, "%s", sim_imsi_info.szMsin);
-			}
+			*msin = g_strdup(sim_imsi_info.szMsin);
 		}
 	}
 	tel_deinit(th);
@@ -270,14 +247,8 @@ int sim_get_spn(char** spn)
 		if (sync_gv) {
 			g_variant_get(sync_gv, "(iys)", &result, &dc, &spn_str);
 			if (result == TAPI_SIM_ACCESS_SUCCESS) {
-				if (spn_str != NULL && strlen(spn_str) != 0) {
-					*spn = (char*) malloc(strlen(spn_str) + 1);
-					if (*spn == NULL) {
-						LOGE("[%s] OUT_OF_MEMORY(0x%08x)", __FUNCTION__, SIM_ERROR_OUT_OF_MEMORY);
-						error_code = SIM_ERROR_OUT_OF_MEMORY;
-					} else {
-						snprintf(*spn, strlen(spn_str) + 1, "%s", spn_str);
-					}
+				if (spn_str != NULL && spn_str[0] != '\0') {
+					*spn = g_strdup(spn_str);
 				} else {
 					*spn = NULL;
 				}
@@ -285,12 +256,14 @@ int sim_get_spn(char** spn)
 				error_code = _convert_access_rt_to_sim_error(result);
 				*spn = NULL;
 			}
+			g_free(spn_str);
 		} else {
 			LOGE("g_dbus_conn failed. error (%s)", gerr->message);
 			g_error_free(gerr);
 			error_code = SIM_ERROR_OPERATION_FAILED;
 			*spn = NULL;
 		}
+		g_variant_unref(sync_gv);
 	}
 	tel_deinit(th);
 	return error_code;
@@ -325,26 +298,14 @@ int sim_get_cphs_operator_name(char** full_name, char** short_name)
 		if (sync_gv) {
 			g_variant_get(sync_gv, "(iss)", &result, &full_str, &short_str);
 			if (result == TAPI_SIM_ACCESS_SUCCESS) {
-				if (full_str != NULL && strlen(full_str) != 0) {
-					*full_name = (char*) malloc(strlen(full_str) + 1);
-					if (*full_name == NULL) {
-						LOGE("[%s] OUT_OF_MEMORY(0x%08x)", __FUNCTION__, SIM_ERROR_OUT_OF_MEMORY);
-						error_code = SIM_ERROR_OUT_OF_MEMORY;
-					} else {
-						snprintf(*full_name, strlen(full_str) + 1, "%s", full_str);
-					}
+				if (full_str != NULL && full_str[0] != '\0') {
+					*full_name = g_strdup(full_str);
 				} else {
 					*full_name = NULL;
 				}
 
-				if (short_str != NULL && strlen(short_str) != 0) {
-					*short_name = (char*) malloc(strlen(short_str) + 1);
-					if (*short_name == NULL) {
-						LOGE("[%s] OUT_OF_MEMORY(0x%08x)", __FUNCTION__, SIM_ERROR_OUT_OF_MEMORY);
-						error_code = SIM_ERROR_OUT_OF_MEMORY;
-					} else {
-						snprintf(*short_name, strlen(short_str) + 1, "%s", short_str);
-					}
+				if (short_str != NULL && short_str[0] != '\0') {
+					*full_name = g_strdup(short_str);
 				} else {
 					*short_name = NULL;
 				}
@@ -353,6 +314,8 @@ int sim_get_cphs_operator_name(char** full_name, char** short_name)
 				*full_name = NULL;
 				*short_name = NULL;
 			}
+			g_free(full_str);
+			g_free(short_str);
 		} else {
 			LOGE("g_dbus_conn failed. error (%s)", gerr->message);
 			g_error_free(gerr);
@@ -360,6 +323,7 @@ int sim_get_cphs_operator_name(char** full_name, char** short_name)
 			*full_name = NULL;
 			*short_name = NULL;
 		}
+		g_variant_unref(sync_gv);
 	}
 	tel_deinit(th);
 	return error_code;
