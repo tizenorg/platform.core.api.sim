@@ -468,6 +468,7 @@ int sim_get_subscriber_number(char** subscriber_number)
 			error_code = SIM_ERROR_OPERATION_FAILED;
 			*subscriber_number = NULL;
 		}
+		g_variant_unref(sync_gv);
 	}
 	tel_deinit(th);
 	return error_code;
