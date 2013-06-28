@@ -5,6 +5,7 @@ Release:    1
 Group:      Telephony/API
 License:    Apache-2.0
 Source0:    %{name}-%{version}.tar.gz
+Source1001: 	capi-telephony-sim.manifest
 BuildRequires:  cmake
 BuildRequires:  pkgconfig(dlog)
 BuildRequires:  pkgconfig(tapi)
@@ -27,6 +28,7 @@ Requires: %{name} = %{version}-%{release}
 
 %prep
 %setup -q
+cp %{SOURCE1001} .
 
 
 %build
@@ -45,11 +47,13 @@ make %{?jobs:-j%jobs}
 
 
 %files
+%manifest %{name}.manifest
 %license LICENSE
 %manifest capi-telephony-sim.manifest
 %{_libdir}/libcapi-telephony-sim.so.*
 
 %files devel
+%manifest %{name}.manifest
 %{_includedir}/telephony/sim.h
 %{_libdir}/pkgconfig/*.pc
 %{_libdir}/libcapi-telephony-sim.so
