@@ -40,6 +40,8 @@ make %{?jobs:-j%jobs}
 
 %install
 %make_install
+mkdir -p %{buildroot}/usr/share/license
+cp LICENSE %{buildroot}/usr/share/license/%{name}
 
 %post -p /sbin/ldconfig
 
@@ -51,6 +53,7 @@ make %{?jobs:-j%jobs}
 %license LICENSE
 %manifest capi-telephony-sim.manifest
 %{_libdir}/libcapi-telephony-sim.so.*
+/usr/share/license/%{name}
 
 %files devel
 %manifest %{name}.manifest
