@@ -7,9 +7,9 @@ SET(maintainer "ByungWoo Lee <bw1212.lee@samsung.com>")
 SET(description "Telephony SIM Framework")
 SET(service "telephony")
 SET(submodule "sim")
-SET(dependents "dlog tapi glib-2.0 capi-base-common")
+SET(dependents "dlog tapi-3.0 glib-2.0 capi-base-common")
 SET(pc_dependents "capi-base-common")
-SET(deb_dependents "dlog-dev libslp-tapi-dev libglib2.0-dev capi-base-common-dev")
+SET(deb_dependents "dlog-dev libtapi3-devel libglib2.0-dev capi-base-common-dev")
 
 SET(Services 
         "application"
@@ -103,6 +103,7 @@ CONFIGURE_FILE(
     @ONLY
 )
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${fw_name}.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig)
+ADD_SUBDIRECTORY(test)
 
 IF(UNIX)
 
