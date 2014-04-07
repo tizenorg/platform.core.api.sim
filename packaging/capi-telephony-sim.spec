@@ -1,6 +1,11 @@
+%define major 3
+%define minor 0
+%define patchlevel 1
+
+#sbs-git:slp/api/sim capi-telephony-sim 0.1.0 338620cf30c11d71e7f17c6cad5968ac57d724d4
 Name:       capi-telephony-sim
 Summary:    Telephony SIM Framework
-Version: 0.1.7
+Version:    %{major}.%{minor}.%{patchlevel}
 Release:    1
 Group:      Telephony/API
 License:    Apache-2.0
@@ -8,9 +13,11 @@ Source0:    %{name}-%{version}.tar.gz
 Source1001: 	capi-telephony-sim.manifest
 BuildRequires:  cmake
 BuildRequires:  pkgconfig(dlog)
-BuildRequires:  pkgconfig(tapi)
+BuildRequires:  pkgconfig(tapi-3.0)
 BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  pkgconfig(capi-base-common)
+Requires(post): /sbin/ldconfig  
+Requires(postun): /sbin/ldconfig
 
 %description
 Telephony SIM Framework.
